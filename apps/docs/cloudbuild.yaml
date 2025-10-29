@@ -1,0 +1,51 @@
+# apps/docs/cloudbuild.yaml
+steps:
+  # Add this as the first step in your cloudbuild.yaml for debugging
+  - name: "gcr.io/cloud-builders/gcloud"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        echo "Project: $PROJECT_ID"
+        echo "Service Account: $(gcloud config get-value account)"
+        gcloud artifacts repositories list --location=asia-south1
+
+  # Build the container image
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "asia-south1-docker.pkg.dev/$PROJECT_ID/health-tech-repository/turbo-docs-service:$COMMIT_SHA",
+        "-f",
+        "apps/docs/Dockerfile",
+        "apps/docs",
+      ]
+
+  # Push the container image to Artifact Registry
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "push",
+        "asia-south1-docker.pkg.dev/$PROJECT_ID/health-tech-repository/turbo-docs-service:$COMMIT_SHA",
+      ]
+
+  # Deploy the image to Cloud Run
+  - name: "gcr.io/cloud-builders/gcloud"
+    args:
+      - "run"
+      - "deploy"
+      - "turbo-docs-service"
+      - "--image"
+      - "asia-south1-docker.pkg.dev/$PROJECT_ID/health-tech-repository/turbo-docs-service:$COMMIT_SHA"
+      - "--region"
+      - "asia-south1"
+      - "--platform"
+      - "managed"
+      - "--allow-unauthenticated"
+
+images:
+  - "asia-south1-docker.pkg.dev/$PROJECT_ID/health-tech-repository/turbo-docs-service:$COMMIT_SHA"
+
+options:
+  logging: CLOUD_LOGGING_ONLY
