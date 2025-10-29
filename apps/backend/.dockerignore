@@ -1,0 +1,12 @@
+node_modules
+dist
+.git
+.gitignore
+README.md
+*.log
+.env
+.env.local
+.eslintcache
+tsconfig.tsbuildinfo
+coverage
+
