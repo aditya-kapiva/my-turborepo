@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "npm run build --workspaces",
-    "dev": "concurrently \"npm run dev --workspace=apps/web\" \"npm run dev --workspace=apps/docs\" --names \"web,docs\" --prefix-colors \"blue,green\"",
+    "dev": "concurrently \"npm run dev --workspace=apps/backend\" \"npm run dev --workspace=apps/web\" \"npm run dev --workspace=apps/docs\" --names \"web,docs\" --prefix-colors \"blue,green\"",
     "start": "npm run start --workspaces",
     "lint": "npm run lint --workspaces",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
