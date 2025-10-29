@@ -7,9 +7,7 @@
     "start": "turbo run start",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "check-types": "turbo run check-types",
-    "build:prod": "turbo run build",
-    "start:prod": "turbo run start"
+    "check-types": "turbo run check-types"
   },
   "dependencies": {    "turbo": "^2.5.8"
   },
