@@ -15,3 +15,6 @@ steps:
 # Only trigger when web app or shared packages change
 substitutions:
   _TRIGGER_NAME: "turbo-web-app-trigger"
+
+options:
+  logging: CLOUD_LOGGING_ONLY
