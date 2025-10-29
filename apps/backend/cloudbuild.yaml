@@ -1,14 +1,25 @@
 # apps/backend/cloudbuild.yaml
 steps:
+  # Add this as the first step in your cloudbuild.yaml for debugging
+  - name: "gcr.io/cloud-builders/gcloud"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        echo "Project: $PROJECT_ID"
+        echo "Service Account: $(gcloud config get-value account)"
+        gcloud artifacts repositories list --location=asia-south1
+
   # Build the container image
   - name: "gcr.io/cloud-builders/docker"
-    args: [
+    args:
+      [
         "build",
         "-t",
         "asia-south1-docker.pkg.dev/$PROJECT_ID/health-tech-repository/turbo-backend-service:$COMMIT_SHA",
         "-f",
-        "apps/backend/Dockerfile", # Explicit Dockerfile path
-        "apps/backend", # Build context
+        "apps/backend/Dockerfile",
+        "apps/backend",
       ]
 
   # Push the container image to Artifact Registry
@@ -24,7 +35,7 @@ steps:
     args:
       - "run"
       - "deploy"
-      - "turbo-backend-service" # The name of the Cloud Run service
+      - "turbo-backend-service"
       - "--image"
       - "asia-south1-docker.pkg.dev/$PROJECT_ID/health-tech-repository/turbo-backend-service:$COMMIT_SHA"
       - "--region"
@@ -33,7 +44,6 @@ steps:
       - "managed"
       - "--allow-unauthenticated"
 
-# Define the images that will be built and stored
 images:
   - "asia-south1-docker.pkg.dev/$PROJECT_ID/health-tech-repository/turbo-backend-service:$COMMIT_SHA"
 
