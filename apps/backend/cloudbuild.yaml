@@ -31,3 +31,6 @@ steps:
 # Define the images that will be built and stored
 images:
   - "gcr.io/$PROJECT_ID/turbo-backend-service:$COMMIT_SHA"
+
+options:
+  logging: CLOUD_LOGGING_ONLY
