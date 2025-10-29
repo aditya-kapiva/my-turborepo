@@ -6,7 +6,7 @@ steps:
       [
         "build",
         "-t",
-        "gcr.io/$PROJECT_ID/-turbobackend-service:$COMMIT_SHA",
+        "gcr.io/$PROJECT_ID/turbo-backend-service:$COMMIT_SHA",
         ".",
       ]
 
