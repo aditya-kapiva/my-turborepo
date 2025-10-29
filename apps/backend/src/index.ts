@@ -11,7 +11,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.get("/", (_req: Request, res: Response) => {
-  res.json({ message: "Welcome to the backend API" });
+  res.json({ message: "Welcome Aditya to the backend API" });
 });
 
 app.get("/health", (_req: Request, res: Response) => {
