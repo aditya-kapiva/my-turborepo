@@ -4,7 +4,7 @@ A basic Node.js backend built with Express and TypeScript.
 
 ## Getting Started
 
-### Development
+### Developments
 
 ```bash
 npm run dev
