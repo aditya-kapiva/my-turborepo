@@ -2,7 +2,7 @@
 
 This is a monorepo setup using npm workspaces.
 
-## What's inside?
+## What's inside?s
 
 This monorepo includes the following packages/apps:
 
