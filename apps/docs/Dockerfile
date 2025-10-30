@@ -7,7 +7,7 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 
 # Install dependencies
-RUN npm ci
+RUN npm i
 
 # Copy source files
 COPY . .
@@ -31,7 +31,7 @@ RUN addgroup -g 1001 -S nodejs && \
 COPY package.json package-lock.json* ./
 
 # Install only production dependencies
-RUN npm ci --only=production && npm cache clean --force
+RUN npm i --only=production && npm cache clean --force
 
 # Copy ALL necessary files from builder stage
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
