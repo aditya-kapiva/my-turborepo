@@ -7,7 +7,7 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 
 # Install dependencies
-RUN npm i
+RUN npm ci
 
 # Copy source files
 COPY . .
@@ -31,26 +31,32 @@ RUN addgroup -g 1001 -S nodejs && \
 COPY package.json package-lock.json* ./
 
 # Install only production dependencies
-RUN npm i --only=production && npm cache clean --force
+RUN npm ci --only=production && npm cache clean --force
 
-# Copy built files from builder stage
-# Next.js standalone output or .next directory
+# Copy ALL necessary files from builder stage
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
-
-# Copy other necessary files
 COPY --from=builder --chown=nextjs:nodejs /app/next.config.js ./
 COPY --from=builder --chown=nextjs:nodejs /app/package.json ./
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
+
+# If using App Router, ensure app directory is copied
+COPY --from=builder --chown=nextjs:nodejs /app/app ./app/
+
+# If using Pages Router, ensure pages directory is copied  
+COPY --from=builder --chown=nextjs:nodejs /app/pages ./pages/
+
+# Copy any other necessary files
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
 USER nextjs
 
-# Expose port
+# Expose port (Cloud Run uses 8080 by default)
 EXPOSE 8080
 
-# Health check
+# Health check - FIXED port to match your app
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD node -e "require('http').get('http://localhost:3001/', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+    CMD node -e "require('http').get('http://localhost:8080/', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
-# Start the application
+# Start the application on port 8080
 CMD ["npm", "start"]
-
