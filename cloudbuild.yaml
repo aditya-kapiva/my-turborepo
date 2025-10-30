@@ -1,0 +1,40 @@
+# Root cloudbuild.yaml
+steps:
+  # Build step using substitution
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "build"
+      - "-t"
+      - "asia-south1-docker.pkg.dev/$PROJECT_ID/health-tech-repository/turbo-${_SERVICE}-service:$COMMIT_SHA"
+      - "-f"
+      - "apps/${_SERVICE}/Dockerfile"
+      - "apps/${_SERVICE}"
+
+  # Push step
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "push"
+      - "asia-south1-docker.pkg.dev/$PROJECT_ID/health-tech-repository/turbo-${_SERVICE}-service:$COMMIT_SHA"
+
+  # Deploy step
+  - name: "gcr.io/cloud-builders/gcloud"
+    args:
+      - "run"
+      - "deploy"
+      - "turbo-${_SERVICE}-service"
+      - "--image"
+      - "asia-south1-docker.pkg.dev/$PROJECT_ID/health-tech-repository/turbo-${_SERVICE}-service:$COMMIT_SHA"
+      - "--region"
+      - "asia-south1"
+      - "--platform"
+      - "managed"
+      - "--allow-unauthenticated"
+
+substitutions:
+  _SERVICE: "backend" # Default, can be overridden
+
+images:
+  - "asia-south1-docker.pkg.dev/$PROJECT_ID/health-tech-repository/turbo-${_SERVICE}-service:$COMMIT_SHA"
+
+options:
+  logging: CLOUD_LOGGING_ONLY
